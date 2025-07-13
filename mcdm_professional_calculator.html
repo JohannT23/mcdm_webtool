@@ -1,0 +1,2173 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MCDM Professional Calculator - Enterprise Edition</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', 'Helvetica', sans-serif;
+            background: #f5f6fa;
+            color: #2c3e50;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        .header {
+            background: #ffffff;
+            border: 1px solid #e1e8ed;
+            text-align: center;
+            padding: 32px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .header h1 {
+            color: #2c3e50;
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            letter-spacing: 0.5px;
+        }
+
+        .header .subtitle {
+            color: #5a6c7d;
+            font-size: 16px;
+            font-weight: 400;
+            margin-bottom: 16px;
+        }
+
+        .header .methods-info {
+            color: #7f8c8d;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+
+        .card {
+            background: #ffffff;
+            border: 1px solid #e1e8ed;
+            padding: 24px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+        }
+
+        .card h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 18px;
+            font-weight: 600;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 8px;
+        }
+
+        .input-group {
+            margin-bottom: 16px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 500;
+            color: #34495e;
+            font-size: 14px;
+        }
+
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #cbd5e0;
+            font-size: 14px;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+            background: #ffffff;
+        }
+
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+
+        .input-valid {
+            border-color: #27ae60;
+            background-color: #f8fff9;
+        }
+
+        .input-invalid {
+            border-color: #e74c3c;
+            background-color: #fef7f7;
+        }
+
+        .matrix-container {
+            overflow-x: auto;
+            margin: 16px 0;
+            border: 1px solid #e1e8ed;
+        }
+
+        .matrix-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 600px;
+            background: #ffffff;
+        }
+
+        .matrix-table th, .matrix-table td {
+            border: 1px solid #e1e8ed;
+            padding: 12px 8px;
+            text-align: center;
+            min-width: 100px;
+            font-size: 13px;
+        }
+
+        .matrix-table th {
+            background: #f8f9fa;
+            color: #2c3e50;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .matrix-table input {
+            width: 100%;
+            border: none;
+            padding: 4px;
+            text-align: center;
+            background: transparent;
+            font-size: 13px;
+        }
+
+        .matrix-table input:focus {
+            background: #e3f2fd;
+            outline: 1px solid #3498db;
+        }
+
+        .criteria-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            border: 1px solid #e1e8ed;
+        }
+
+        .criteria-table th, .criteria-table td {
+            border: 1px solid #e1e8ed;
+            padding: 12px;
+            text-align: left;
+            font-size: 13px;
+        }
+
+        .criteria-table th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .method-buttons {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 12px;
+            margin: 24px 0;
+        }
+
+        .method-btn {
+            background: #3498db;
+            color: #ffffff;
+            border: none;
+            padding: 16px 12px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 3px solid #2980b9;
+        }
+
+        .method-btn:hover {
+            background: #2980b9;
+            transform: translateY(-1px);
+        }
+
+        .method-btn:active {
+            transform: translateY(0);
+        }
+
+        .method-btn.saw {
+            background: #27ae60;
+            border-bottom-color: #229954;
+        }
+
+        .method-btn.saw:hover {
+            background: #229954;
+        }
+
+        .method-btn.wpm {
+            background: #f39c12;
+            border-bottom-color: #e67e22;
+        }
+
+        .method-btn.wpm:hover {
+            background: #e67e22;
+        }
+
+        .method-btn.topsis {
+            background: #8e44ad;
+            border-bottom-color: #732d91;
+        }
+
+        .method-btn.topsis:hover {
+            background: #732d91;
+        }
+
+        .method-btn.ahp {
+            background: #e74c3c;
+            border-bottom-color: #c0392b;
+        }
+
+        .method-btn.ahp:hover {
+            background: #c0392b;
+        }
+
+        .method-btn.hybrid {
+            background: #34495e;
+            border-bottom-color: #2c3e50;
+        }
+
+        .method-btn.hybrid:hover {
+            background: #2c3e50;
+        }
+
+        .results-container {
+            background: #ffffff;
+            border: 1px solid #e1e8ed;
+            padding: 24px;
+            margin: 24px 0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+        }
+
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            border: 1px solid #e1e8ed;
+        }
+
+        .results-table th, .results-table td {
+            border: 1px solid #e1e8ed;
+            padding: 12px;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .results-table th {
+            background: #f8f9fa;
+            color: #2c3e50;
+            font-weight: 600;
+        }
+
+        .results-table .rank-1 {
+            background: #fff3cd;
+            font-weight: 600;
+            color: #856404;
+        }
+
+        .results-table .rank-2 {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #495057;
+        }
+
+        .results-table .rank-3 {
+            background: #f1c0a8;
+            color: #6f4e37;
+            font-weight: 600;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 400px;
+            margin: 24px 0;
+            background: #ffffff;
+            border: 1px solid #e1e8ed;
+            padding: 16px;
+        }
+
+        .validation-message {
+            padding: 12px 16px;
+            margin: 16px 0;
+            font-weight: 500;
+            font-size: 14px;
+            border-left: 4px solid;
+        }
+
+        .validation-success {
+            background: #d4edda;
+            color: #155724;
+            border-left-color: #28a745;
+        }
+
+        .validation-error {
+            background: #f8d7da;
+            color: #721c24;
+            border-left-color: #dc3545;
+        }
+
+        .validation-warning {
+            background: #fff3cd;
+            color: #856404;
+            border-left-color: #ffc107;
+        }
+
+        .steps-container {
+            background: #f8f9fa;
+            padding: 20px;
+            margin: 20px 0;
+            border: 1px solid #e1e8ed;
+        }
+
+        .step {
+            margin: 16px 0;
+            padding: 16px;
+            background: #ffffff;
+            border-left: 4px solid #3498db;
+        }
+
+        .step h4 {
+            color: #2c3e50;
+            margin-bottom: 8px;
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        .step p {
+            color: #5a6c7d;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .comparison-results {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+            margin: 24px 0;
+        }
+
+        .method-result {
+            background: #ffffff;
+            border: 1px solid #e1e8ed;
+            padding: 16px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+        }
+
+        .method-result h3 {
+            text-align: center;
+            margin-bottom: 12px;
+            padding: 8px 12px;
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .method-result ol {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .method-result li {
+            margin: 6px 0;
+            font-size: 13px;
+            line-height: 1.4;
+        }
+
+        .export-buttons {
+            display: flex;
+            gap: 12px;
+            margin: 24px 0;
+            justify-content: center;
+        }
+
+        .export-btn {
+            background: #6c757d;
+            color: #ffffff;
+            border: none;
+            padding: 12px 20px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 14px;
+            transition: background 0.2s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .export-btn:hover {
+            background: #5a6268;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 32px;
+            background: #ffffff;
+            border: 1px solid #e1e8ed;
+            margin: 24px 0;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3498db;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 12px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .weight-summary {
+            background: #e3f2fd;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-left: 4px solid #2196f3;
+            font-size: 14px;
+        }
+
+        .weight-summary strong {
+            color: #1976d2;
+        }
+
+        .ahp-consistency {
+            padding: 16px;
+            margin: 16px 0;
+            border: 1px solid #e1e8ed;
+            background: #ffffff;
+        }
+
+        .ahp-consistency.valid {
+            border-left: 4px solid #28a745;
+            background: #f8fff9;
+        }
+
+        .ahp-consistency.invalid {
+            border-left: 4px solid #dc3545;
+            background: #fef7f7;
+        }
+
+        .data-status {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 8px 12px;
+            background: #ffffff;
+            border: 1px solid #e1e8ed;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            font-size: 12px;
+            font-weight: 500;
+            z-index: 1000;
+        }
+
+        .data-status.valid {
+            color: #28a745;
+            border-left: 4px solid #28a745;
+        }
+
+        .data-status.invalid {
+            color: #dc3545;
+            border-left: 4px solid #dc3545;
+        }
+
+        @media (max-width: 1200px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .method-buttons {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .method-buttons {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 24px;
+            }
+
+            .comparison-results {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .error-boundary {
+            border: 2px solid #dc3545;
+            background: #f8d7da;
+            padding: 16px;
+            margin: 16px 0;
+            color: #721c24;
+        }
+
+        .warning-text {
+            color: #856404;
+            font-size: 12px;
+            font-style: italic;
+            margin-top: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="data-status" id="dataStatus">
+        Initializing...
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <h1>MCDM Professional Calculator</h1>
+            <div class="subtitle">Multi-Criteria Decision Making Analysis Platform</div>
+            <div class="methods-info">
+                Enterprise Edition | SAW • WPM • TOPSIS • AHP • AHP-TOPSIS Hybrid
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="card">
+                <h2>Project Configuration</h2>
+                <div class="input-group">
+                    <label>Project Name:</label>
+                    <input type="text" id="projectName" value="Multi-Criteria Decision Analysis" 
+                           placeholder="Enter project name" maxlength="100" onchange="validateProjectData()">
+                </div>
+                <div class="input-group">
+                    <label>Analyst Name:</label>
+                    <input type="text" id="analyst" value="Decision Analyst" 
+                           placeholder="Enter analyst name" maxlength="100" onchange="validateProjectData()">
+                </div>
+                <div class="input-group">
+                    <label>Number of Alternatives (2-10):</label>
+                    <input type="number" id="numAlternatives" value="3" min="2" max="10" 
+                           onchange="updateMatrix()" onblur="validateProjectData()">
+                    <div class="warning-text">Changes will reset all entered data</div>
+                </div>
+                <div class="input-group">
+                    <label>Number of Criteria (2-15):</label>
+                    <input type="number" id="numCriteria" value="4" min="2" max="15" 
+                           onchange="updateMatrix()" onblur="validateProjectData()">
+                    <div class="warning-text">Changes will reset all entered data</div>
+                </div>
+
+                <div id="validationMessage" class="validation-message hidden"></div>
+            </div>
+
+            <div class="card">
+                <h2>Criteria Configuration</h2>
+                <div id="criteriaConfig">
+                    <!-- Generated dynamically -->
+                </div>
+                <div class="weight-summary">
+                    <strong>Total Weight: <span id="totalWeight">1.000</span></strong>
+                    <div class="warning-text">Must equal 1.000 for valid calculation</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Decision Matrix</h2>
+            <div class="matrix-container">
+                <table class="matrix-table" id="decisionMatrix">
+                    <!-- Generated dynamically -->
+                </table>
+            </div>
+        </div>
+
+        <div class="method-buttons">
+            <button class="method-btn saw" onclick="executeMethod('SAW')" id="btnSAW">
+                SAW<br><small>Simple Additive Weighting</small>
+            </button>
+            <button class="method-btn wpm" onclick="executeMethod('WPM')" id="btnWPM">
+                WPM<br><small>Weighted Product Method</small>
+            </button>
+            <button class="method-btn topsis" onclick="executeMethod('TOPSIS')" id="btnTOPSIS">
+                TOPSIS<br><small>Ideal Solution Method</small>
+            </button>
+            <button class="method-btn ahp" onclick="executeMethod('AHP')" id="btnAHP">
+                AHP<br><small>Analytic Hierarchy Process</small>
+            </button>
+            <button class="method-btn hybrid" onclick="executeMethod('HYBRID')" id="btnHYBRID">
+                AHP-TOPSIS<br><small>Hybrid Method</small>
+            </button>
+        </div>
+
+        <div class="export-buttons">
+            <button class="export-btn" onclick="compareAllMethods()">Compare All Methods</button>
+            <button class="export-btn" onclick="exportToExcel()">Export to CSV</button>
+            <button class="export-btn" onclick="exportToPDF()">Print Report</button>
+            <button class="export-btn" onclick="resetApplication()">Reset All Data</button>
+        </div>
+
+        <div class="loading hidden" id="loadingIndicator">
+            <div class="spinner"></div>
+            <div><strong>Processing calculation...</strong></div>
+            <div style="font-size: 12px; color: #6c757d; margin-top: 8px;">Please wait while we compute the results</div>
+        </div>
+
+        <!-- Results Container -->
+        <div id="resultsContainer" class="results-container hidden">
+            <h2>Calculation Results</h2>
+            <div id="currentMethod"></div>
+            <div id="calculationSteps" class="steps-container"></div>
+            <table class="results-table" id="resultsTable">
+                <!-- Results will be displayed here -->
+            </table>
+            <div class="chart-container">
+                <canvas id="resultsChart"></canvas>
+            </div>
+        </div>
+
+        <!-- AHP Container -->
+        <div id="ahpContainer" class="results-container hidden">
+            <h2>AHP Pairwise Comparison Matrix</h2>
+            <p><strong>Instructions:</strong> Enter values from 1-9 to compare the relative importance between criteria pairs</p>
+            <div style="margin: 16px 0; padding: 12px; background: #e3f2fd; border-left: 4px solid #2196f3;">
+                <strong>Saaty Scale:</strong> 1=Equal, 3=Moderate, 5=Strong, 7=Very Strong, 9=Extreme importance
+            </div>
+            <div class="matrix-container">
+                <table class="matrix-table" id="ahpMatrix">
+                    <!-- AHP matrix will be generated here -->
+                </table>
+            </div>
+            <button class="method-btn ahp" onclick="calculateAHP()" style="margin: 16px 0;">Calculate AHP Weights</button>
+            <div id="ahpResults"></div>
+        </div>
+
+        <!-- Comparison Container -->
+        <div id="comparisonContainer" class="results-container hidden">
+            <h2>Method Comparison Analysis</h2>
+            <div class="comparison-results" id="comparisonResults">
+                <!-- Comparison results will be displayed here -->
+            </div>
+            <div class="chart-container">
+                <canvas id="comparisonChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Error Container -->
+        <div id="errorContainer" class="error-boundary hidden">
+            <h3>Application Error</h3>
+            <div id="errorMessage"></div>
+            <button onclick="resetApplication()" style="margin-top: 12px;">Reset Application</button>
+        </div>
+    </div>
+
+    <script>
+        // Global Application State
+        const AppState = {
+            initialized: false,
+            currentResults: {},
+            allMethodsResults: {},
+            currentChart: null,
+            comparisonChart: null,
+            isDataValid: false,
+            currentMethod: null,
+            ahpMatrix: null,
+            debugMode: false
+        };
+
+        // Sample data for initialization
+        const SAMPLE_DATA = {
+            alternatives: ['Alternative A', 'Alternative B', 'Alternative C'],
+            criteria: ['Price', 'Performance', 'Reliability', 'Support'],
+            criteriaTypes: ['Cost Criteria', 'Benefit Criteria', 'Benefit Criteria', 'Benefit Criteria'],
+            weights: [0.3, 0.4, 0.2, 0.1],
+            matrix: [
+                [25000, 85, 9, 8],
+                [20000, 70, 8, 9],
+                [30000, 92, 7, 7]
+            ]
+        };
+
+        // Error Handling and Logging
+        class ErrorHandler {
+            static logError(error, context = '') {
+                console.error(`[MCDM App Error] ${context}:`, error);
+                if (AppState.debugMode) {
+                    this.showError(`${context}: ${error.message || error}`);
+                }
+            }
+
+            static showError(message) {
+                const errorContainer = document.getElementById('errorContainer');
+                const errorMessage = document.getElementById('errorMessage');
+                errorMessage.textContent = message;
+                errorContainer.classList.remove('hidden');
+                
+                // Auto-hide after 10 seconds
+                setTimeout(() => {
+                    errorContainer.classList.add('hidden');
+                }, 10000);
+            }
+
+            static validateInput(value, type, min = null, max = null) {
+                try {
+                    switch (type) {
+                        case 'number':
+                            const num = parseFloat(value);
+                            if (isNaN(num)) return false;
+                            if (min !== null && num < min) return false;
+                            if (max !== null && num > max) return false;
+                            return true;
+                        case 'string':
+                            return typeof value === 'string' && value.trim().length > 0;
+                        default:
+                            return false;
+                    }
+                } catch (error) {
+                    this.logError(error, 'Input Validation');
+                    return false;
+                }
+            }
+        }
+
+        // UI State Management
+        class UIManager {
+            static hideAllContainers() {
+                const containers = ['resultsContainer', 'ahpContainer', 'comparisonContainer'];
+                containers.forEach(id => {
+                    document.getElementById(id).classList.add('hidden');
+                });
+            }
+
+            static showContainer(containerId) {
+                this.hideAllContainers();
+                document.getElementById(containerId).classList.remove('hidden');
+            }
+
+            static showLoading(show = true) {
+                const loader = document.getElementById('loadingIndicator');
+                if (show) {
+                    loader.classList.remove('hidden');
+                } else {
+                    loader.classList.add('hidden');
+                }
+            }
+
+            static updateDataStatus(isValid, message = '') {
+                const statusElement = document.getElementById('dataStatus');
+                statusElement.className = `data-status ${isValid ? 'valid' : 'invalid'}`;
+                statusElement.textContent = message || (isValid ? 'Data Valid' : 'Data Invalid');
+                AppState.isDataValid = isValid;
+            }
+
+            static showValidationMessage(message, type = 'error') {
+                const messageDiv = document.getElementById('validationMessage');
+                messageDiv.textContent = message;
+                messageDiv.className = `validation-message validation-${type}`;
+                messageDiv.classList.remove('hidden');
+
+                // Auto-hide success messages
+                if (type === 'success') {
+                    setTimeout(() => {
+                        messageDiv.classList.add('hidden');
+                    }, 3000);
+                }
+            }
+        }
+
+        // Data Management
+        class DataManager {
+            static getMatrixData() {
+                try {
+                    const numAlternatives = parseInt(document.getElementById('numAlternatives').value);
+                    const numCriteria = parseInt(document.getElementById('numCriteria').value);
+                    
+                    // Validate dimensions
+                    if (!ErrorHandler.validateInput(numAlternatives, 'number', 2, 10) ||
+                        !ErrorHandler.validateInput(numCriteria, 'number', 2, 15)) {
+                        throw new Error('Invalid matrix dimensions');
+                    }
+                    
+                    // Get alternatives names
+                    const alternativeNames = [];
+                    const matrixRows = document.querySelectorAll('#decisionMatrix tr');
+                    for (let i = 1; i <= numAlternatives; i++) {
+                        const nameInput = matrixRows[i]?.querySelector('input[type="text"]');
+                        if (!nameInput) throw new Error(`Missing alternative name at row ${i}`);
+                        const name = nameInput.value.trim();
+                        if (!name) throw new Error(`Empty alternative name at row ${i}`);
+                        alternativeNames.push(name);
+                    }
+
+                    // Get criteria info
+                    const criteriaInfo = [];
+                    const criteriaTable = document.querySelector('#criteriaConfig table');
+                    const criteriaRows = criteriaTable?.querySelectorAll('tr');
+                    
+                    if (!criteriaRows || criteriaRows.length < numCriteria + 1) {
+                        throw new Error('Criteria configuration table not found or incomplete');
+                    }
+                    
+                    for (let i = 1; i <= numCriteria; i++) {
+                        const inputs = criteriaRows[i]?.querySelectorAll('input, select');
+                        if (!inputs || inputs.length < 3) throw new Error(`Incomplete criteria configuration at row ${i}`);
+                        
+                        const name = inputs[0].value.trim();
+                        const type = inputs[1].value;
+                        const weight = parseFloat(inputs[2].value);
+                        
+                        if (!name) throw new Error(`Empty criteria name at row ${i}`);
+                        if (!type) throw new Error(`Missing criteria type at row ${i}`);
+                        if (!ErrorHandler.validateInput(weight, 'number', 0, 1)) {
+                            throw new Error(`Invalid weight at criteria ${i}: ${weight}`);
+                        }
+                        
+                        criteriaInfo.push({ name, type, weight });
+                    }
+
+                    // Validate total weight
+                    const totalWeight = criteriaInfo.reduce((sum, c) => sum + c.weight, 0);
+                    if (Math.abs(totalWeight - 1) > 0.001) {
+                        throw new Error(`Total weight must equal 1.000, current: ${totalWeight.toFixed(3)}`);
+                    }
+
+                    // Get decision matrix
+                    const matrix = [];
+                    for (let i = 1; i <= numAlternatives; i++) {
+                        const row = [];
+                        const inputs = matrixRows[i]?.querySelectorAll('input[type="number"]');
+                        if (!inputs || inputs.length !== numCriteria) {
+                            throw new Error(`Incomplete matrix data at row ${i}`);
+                        }
+                        
+                        for (let j = 0; j < numCriteria; j++) {
+                            const value = parseFloat(inputs[j].value);
+                            if (!ErrorHandler.validateInput(value, 'number') || value <= 0) {
+                                throw new Error(`Invalid matrix value at Alternative ${i}, Criteria ${j + 1}: ${inputs[j].value}`);
+                            }
+                            row.push(value);
+                        }
+                        matrix.push(row);
+                    }
+
+                    return {
+                        alternatives: alternativeNames,
+                        criteria: criteriaInfo,
+                        matrix: matrix,
+                        numAlternatives: numAlternatives,
+                        numCriteria: numCriteria
+                    };
+                    
+                } catch (error) {
+                    ErrorHandler.logError(error, 'Data Extraction');
+                    throw error;
+                }
+            }
+
+            static validateAllData() {
+                try {
+                    this.getMatrixData();
+                    UIManager.updateDataStatus(true, 'All data valid');
+                    UIManager.showValidationMessage('Data validation successful - ready for calculation', 'success');
+                    return true;
+                } catch (error) {
+                    UIManager.updateDataStatus(false, 'Data validation failed');
+                    UIManager.showValidationMessage(error.message, 'error');
+                    return false;
+                }
+            }
+        }
+
+        // Calculation Engine
+        class CalculationEngine {
+            static performSAW(data) {
+                try {
+                    const { matrix, criteria, alternatives } = data;
+                    const steps = [];
+                    
+                    steps.push({
+                        title: 'Step 1: Matrix Normalization',
+                        description: 'Converting all values to [0,1] scale using benefit/cost criteria logic'
+                    });
+
+                    const normalizedMatrix = [];
+                    for (let i = 0; i < matrix.length; i++) {
+                        normalizedMatrix[i] = [];
+                        for (let j = 0; j < matrix[i].length; j++) {
+                            if (criteria[j].type === 'Benefit Criteria') {
+                                const maxVal = Math.max(...matrix.map(row => row[j]));
+                                normalizedMatrix[i][j] = matrix[i][j] / maxVal;
+                            } else {
+                                const minVal = Math.min(...matrix.map(row => row[j]));
+                                normalizedMatrix[i][j] = minVal / matrix[i][j];
+                            }
+                        }
+                    }
+
+                    steps.push({
+                        title: 'Step 2: Weighted Score Calculation',
+                        description: 'Applying criteria weights and calculating total scores: Si = Σ(wj × rij)'
+                    });
+
+                    const scores = [];
+                    for (let i = 0; i < normalizedMatrix.length; i++) {
+                        let score = 0;
+                        for (let j = 0; j < normalizedMatrix[i].length; j++) {
+                            score += normalizedMatrix[i][j] * criteria[j].weight;
+                        }
+                        scores.push({
+                            alternative: alternatives[i],
+                            score: score,
+                            normalizedValues: normalizedMatrix[i]
+                        });
+                    }
+
+                    steps.push({
+                        title: 'Step 3: Ranking Determination',
+                        description: 'Sorting alternatives by SAW score in descending order'
+                    });
+
+                    scores.sort((a, b) => b.score - a.score);
+                    scores.forEach((item, index) => {
+                        item.rank = index + 1;
+                    });
+
+                    return {
+                        method: 'SAW',
+                        scores: scores,
+                        steps: steps,
+                        normalizedMatrix: normalizedMatrix
+                    };
+                } catch (error) {
+                    ErrorHandler.logError(error, 'SAW Calculation');
+                    throw error;
+                }
+            }
+
+            static performWPM(data) {
+                try {
+                    const { matrix, criteria, alternatives } = data;
+                    const steps = [];
+                    
+                    steps.push({
+                        title: 'Step 1: WPM Score Calculation',
+                        description: 'Using multiplicative aggregation with weights: Si = ∏(rij^wj)'
+                    });
+
+                    const scores = [];
+                    for (let i = 0; i < matrix.length; i++) {
+                        let product = 1;
+                        for (let j = 0; j < matrix[i].length; j++) {
+                            let value = matrix[i][j];
+                            
+                            if (criteria[j].type === 'Cost Criteria') {
+                                const maxVal = Math.max(...matrix.map(row => row[j]));
+                                value = maxVal / value;
+                            }
+                            
+                            product *= Math.pow(value, criteria[j].weight);
+                        }
+                        
+                        scores.push({
+                            alternative: alternatives[i],
+                            score: product
+                        });
+                    }
+
+                    scores.sort((a, b) => b.score - a.score);
+                    scores.forEach((item, index) => {
+                        item.rank = index + 1;
+                    });
+
+                    return {
+                        method: 'WPM',
+                        scores: scores,
+                        steps: steps
+                    };
+                } catch (error) {
+                    ErrorHandler.logError(error, 'WPM Calculation');
+                    throw error;
+                }
+            }
+
+            static performTOPSIS(data) {
+                try {
+                    const { matrix, criteria, alternatives } = data;
+                    const steps = [];
+                    
+                    steps.push({
+                        title: 'Step 1: Vector Normalization',
+                        description: 'Normalizing matrix using Euclidean method: rij = xij / √(Σxij²)'
+                    });
+
+                    const normalizedMatrix = [];
+                    for (let j = 0; j < matrix[0].length; j++) {
+                        const sumSquares = matrix.reduce((sum, row) => sum + row[j] * row[j], 0);
+                        const sqrtSum = Math.sqrt(sumSquares);
+                        
+                        for (let i = 0; i < matrix.length; i++) {
+                            if (!normalizedMatrix[i]) normalizedMatrix[i] = [];
+                            normalizedMatrix[i][j] = matrix[i][j] / sqrtSum;
+                        }
+                    }
+
+                    steps.push({
+                        title: 'Step 2: Weighted Normalized Matrix',
+                        description: 'Applying criteria weights: vij = wj × rij'
+                    });
+
+                    const weightedMatrix = [];
+                    for (let i = 0; i < normalizedMatrix.length; i++) {
+                        weightedMatrix[i] = [];
+                        for (let j = 0; j < normalizedMatrix[i].length; j++) {
+                            weightedMatrix[i][j] = normalizedMatrix[i][j] * criteria[j].weight;
+                        }
+                    }
+
+                    steps.push({
+                        title: 'Step 3: Ideal Solutions Identification',
+                        description: 'Determining positive ideal (A+) and negative ideal (A-) solutions'
+                    });
+
+                    const idealPositive = [];
+                    const idealNegative = [];
+                    
+                    for (let j = 0; j < criteria.length; j++) {
+                        const columnValues = weightedMatrix.map(row => row[j]);
+                        
+                        if (criteria[j].type === 'Benefit Criteria') {
+                            idealPositive[j] = Math.max(...columnValues);
+                            idealNegative[j] = Math.min(...columnValues);
+                        } else {
+                            idealPositive[j] = Math.min(...columnValues);
+                            idealNegative[j] = Math.max(...columnValues);
+                        }
+                    }
+
+                    steps.push({
+                        title: 'Step 4: Distance Calculation',
+                        description: 'Computing Euclidean distances to ideal solutions: S+i and S-i'
+                    });
+
+                    const scores = [];
+                    for (let i = 0; i < weightedMatrix.length; i++) {
+                        let distancePositive = 0;
+                        let distanceNegative = 0;
+                        
+                        for (let j = 0; j < weightedMatrix[i].length; j++) {
+                            distancePositive += Math.pow(weightedMatrix[i][j] - idealPositive[j], 2);
+                            distanceNegative += Math.pow(weightedMatrix[i][j] - idealNegative[j], 2);
+                        }
+                        
+                        distancePositive = Math.sqrt(distancePositive);
+                        distanceNegative = Math.sqrt(distanceNegative);
+                        
+                        const closeness = distanceNegative / (distancePositive + distanceNegative);
+                        
+                        scores.push({
+                            alternative: alternatives[i],
+                            score: closeness,
+                            distancePositive: distancePositive,
+                            distanceNegative: distanceNegative
+                        });
+                    }
+
+                    steps.push({
+                        title: 'Step 5: Relative Closeness Calculation',
+                        description: 'Final ranking based on closeness coefficient: C*i = S-i / (S+i + S-i)'
+                    });
+
+                    scores.sort((a, b) => b.score - a.score);
+                    scores.forEach((item, index) => {
+                        item.rank = index + 1;
+                    });
+
+                    return {
+                        method: 'TOPSIS',
+                        scores: scores,
+                        steps: steps,
+                        idealPositive: idealPositive,
+                        idealNegative: idealNegative
+                    };
+                } catch (error) {
+                    ErrorHandler.logError(error, 'TOPSIS Calculation');
+                    throw error;
+                }
+            }
+
+            static performAHP(data) {
+                try {
+                    const numCriteria = data.numCriteria;
+                    const matrix = [];
+                    
+                    // Extract AHP matrix values
+                    const ahpTable = document.getElementById('ahpMatrix');
+                    if (!ahpTable) throw new Error('AHP matrix table not found');
+                    
+                    for (let i = 0; i < numCriteria; i++) {
+                        matrix[i] = [];
+                        for (let j = 0; j < numCriteria; j++) {
+                            if (i === j) {
+                                matrix[i][j] = 1;
+                            } else if (i < j) {
+                                const input = ahpTable.rows[i + 1]?.cells[j + 1]?.querySelector('input');
+                                if (!input) throw new Error(`Missing AHP input at (${i+1}, ${j+1})`);
+                                const value = parseFloat(input.value);
+                                if (!ErrorHandler.validateInput(value, 'number', 0.1, 9)) {
+                                    throw new Error(`Invalid AHP value at (${i+1}, ${j+1}): ${value}`);
+                                }
+                                matrix[i][j] = value;
+                            } else {
+                                matrix[i][j] = 1 / matrix[j][i];
+                            }
+                        }
+                    }
+
+                    // Calculate column sums
+                    const columnSums = [];
+                    for (let j = 0; j < numCriteria; j++) {
+                        let sum = 0;
+                        for (let i = 0; i < numCriteria; i++) {
+                            sum += matrix[i][j];
+                        }
+                        columnSums[j] = sum;
+                    }
+
+                    // Normalize matrix
+                    const normalizedMatrix = [];
+                    for (let i = 0; i < numCriteria; i++) {
+                        normalizedMatrix[i] = [];
+                        for (let j = 0; j < numCriteria; j++) {
+                            normalizedMatrix[i][j] = matrix[i][j] / columnSums[j];
+                        }
+                    }
+
+                    // Calculate weights (row averages)
+                    const weights = [];
+                    for (let i = 0; i < numCriteria; i++) {
+                        let sum = 0;
+                        for (let j = 0; j < numCriteria; j++) {
+                            sum += normalizedMatrix[i][j];
+                        }
+                        weights[i] = sum / numCriteria;
+                    }
+
+                    // Calculate consistency ratio
+                    const lambdaMax = this.calculateLambdaMax(matrix, weights);
+                    const CI = (lambdaMax - numCriteria) / (numCriteria - 1);
+                    const RI = [0, 0, 0.52, 0.89, 1.11, 1.25, 1.35, 1.40, 1.45, 1.49, 1.51, 1.54, 1.56, 1.57, 1.58];
+                    const CR = numCriteria > 2 ? CI / RI[numCriteria] : 0;
+
+                    return {
+                        method: 'AHP',
+                        weights: weights,
+                        matrix: matrix,
+                        normalizedMatrix: normalizedMatrix,
+                        lambdaMax: lambdaMax,
+                        CI: CI,
+                        CR: CR,
+                        isConsistent: CR <= 0.1
+                    };
+                } catch (error) {
+                    ErrorHandler.logError(error, 'AHP Calculation');
+                    throw error;
+                }
+            }
+
+            static calculateLambdaMax(matrix, weights) {
+                const numCriteria = matrix.length;
+                let lambdaMax = 0;
+
+                for (let i = 0; i < numCriteria; i++) {
+                    let sum = 0;
+                    for (let j = 0; j < numCriteria; j++) {
+                        sum += matrix[i][j] * weights[j];
+                    }
+                    lambdaMax += sum / weights[i];
+                }
+
+                return lambdaMax / numCriteria;
+            }
+        }
+
+        // Visualization Engine
+        class ChartManager {
+            static createResultsChart(scores, methodName) {
+                try {
+                    const ctx = document.getElementById('resultsChart');
+                    if (!ctx) throw new Error('Results chart canvas not found');
+                    
+                    const chartCtx = ctx.getContext('2d');
+                    
+                    if (AppState.currentChart) {
+                        AppState.currentChart.destroy();
+                    }
+
+                    const labels = scores.map(item => item.alternative);
+                    const data = scores.map(item => item.score);
+                    const backgroundColors = scores.map((item, index) => {
+                        if (index === 0) return '#ffc107';
+                        if (index === 1) return '#6c757d';
+                        if (index === 2) return '#fd7e14';
+                        return '#adb5bd';
+                    });
+
+                    AppState.currentChart = new Chart(chartCtx, {
+                        type: 'bar',
+                        data: {
+                            labels: labels,
+                            datasets: [{
+                                label: `${methodName} Scores`,
+                                data: data,
+                                backgroundColor: backgroundColors,
+                                borderColor: backgroundColors,
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                title: {
+                                    display: true,
+                                    text: `${methodName} Results Analysis`,
+                                    font: {
+                                        size: 16,
+                                        weight: 'bold'
+                                    }
+                                },
+                                legend: {
+                                    display: false
+                                }
+                            },
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    title: {
+                                        display: true,
+                                        text: 'Score Value'
+                                    }
+                                },
+                                x: {
+                                    title: {
+                                        display: true,
+                                        text: 'Alternatives'
+                                    }
+                                }
+                            }
+                        }
+                    });
+                } catch (error) {
+                    ErrorHandler.logError(error, 'Chart Creation');
+                }
+            }
+
+            static createComparisonChart() {
+                try {
+                    const ctx = document.getElementById('comparisonChart');
+                    if (!ctx) throw new Error('Comparison chart canvas not found');
+                    
+                    const chartCtx = ctx.getContext('2d');
+                    
+                    if (AppState.comparisonChart) {
+                        AppState.comparisonChart.destroy();
+                    }
+
+                    const data = DataManager.getMatrixData();
+                    const labels = data.alternatives;
+                    const datasets = [];
+
+                    const colors = ['#28a745', '#ffc107', '#6f42c1', '#dc3545', '#17a2b8'];
+                    let colorIndex = 0;
+
+                    Object.keys(AppState.allMethodsResults).forEach(methodName => {
+                        const methodResult = AppState.allMethodsResults[methodName];
+                        const scores = methodResult.scores || methodResult.topsis?.scores;
+
+                        if (scores) {
+                            const rankData = labels.map(alt => {
+                                const found = scores.find(item => item.alternative === alt);
+                                return found ? found.rank : null;
+                            });
+
+                            datasets.push({
+                                label: methodName,
+                                data: rankData,
+                                borderColor: colors[colorIndex % colors.length],
+                                backgroundColor: colors[colorIndex % colors.length] + '20',
+                                fill: false,
+                                tension: 0.1
+                            });
+                            colorIndex++;
+                        }
+                    });
+
+                    AppState.comparisonChart = new Chart(chartCtx, {
+                        type: 'line',
+                        data: {
+                            labels: labels,
+                            datasets: datasets
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                title: {
+                                    display: true,
+                                    text: 'Method Comparison - Ranking Analysis',
+                                    font: {
+                                        size: 16,
+                                        weight: 'bold'
+                                    }
+                                }
+                            },
+                            scales: {
+                                y: {
+                                    reverse: true,
+                                    min: 1,
+                                    max: data.alternatives.length,
+                                    title: {
+                                        display: true,
+                                        text: 'Ranking Position'
+                                    },
+                                    ticks: {
+                                        stepSize: 1
+                                    }
+                                },
+                                x: {
+                                    title: {
+                                        display: true,
+                                        text: 'Alternatives'
+                                    }
+                                }
+                            }
+                        }
+                    });
+                } catch (error) {
+                    ErrorHandler.logError(error, 'Comparison Chart Creation');
+                }
+            }
+        }
+
+        // Application Initialization and Event Handlers
+        document.addEventListener('DOMContentLoaded', function() {
+            try {
+                initializeApplication();
+                loadSampleData();
+                UIManager.updateDataStatus(false, 'Initializing...');
+                
+                // Setup global error handlers
+                window.addEventListener('error', function(e) {
+                    ErrorHandler.logError(e.error, 'Global Error');
+                });
+                
+                AppState.initialized = true;
+                console.log('MCDM Application initialized successfully');
+            } catch (error) {
+                ErrorHandler.logError(error, 'Application Initialization');
+                ErrorHandler.showError('Failed to initialize application');
+            }
+        });
+
+        function initializeApplication() {
+            updateMatrix();
+            validateProjectData();
+        }
+
+        function updateMatrix() {
+            try {
+                const numAlternatives = parseInt(document.getElementById('numAlternatives').value);
+                const numCriteria = parseInt(document.getElementById('numCriteria').value);
+                
+                if (!ErrorHandler.validateInput(numAlternatives, 'number', 2, 10) ||
+                    !ErrorHandler.validateInput(numCriteria, 'number', 2, 15)) {
+                    UIManager.showValidationMessage('Number of alternatives must be 2-10, criteria must be 2-15', 'error');
+                    return;
+                }
+
+                createCriteriaConfig(numCriteria);
+                createDecisionMatrix(numAlternatives, numCriteria);
+                
+                // Reset results when matrix changes
+                AppState.allMethodsResults = {};
+                AppState.currentResults = {};
+                UIManager.hideAllContainers();
+                
+                UIManager.showValidationMessage('Matrix structure updated - please verify data', 'warning');
+                validateAllInputs();
+                
+            } catch (error) {
+                ErrorHandler.logError(error, 'Matrix Update');
+                UIManager.showValidationMessage('Failed to update matrix structure', 'error');
+            }
+        }
+
+        function createCriteriaConfig(numCriteria) {
+            const container = document.getElementById('criteriaConfig');
+            container.innerHTML = '';
+
+            const table = document.createElement('table');
+            table.className = 'criteria-table';
+            
+            const headerRow = table.insertRow();
+            headerRow.innerHTML = '<th>Criteria Name</th><th>Criteria Type</th><th>Weight</th>';
+
+            for (let i = 0; i < numCriteria; i++) {
+                const row = table.insertRow();
+                
+                const nameCell = row.insertCell();
+                nameCell.innerHTML = `<input type="text" value="Criteria ${i + 1}" onchange="validateAllInputs()" maxlength="50">`;
+                
+                const typeCell = row.insertCell();
+                typeCell.innerHTML = `
+                    <select onchange="validateAllInputs()">
+                        <option value="Benefit Criteria">Benefit Criteria (higher is better)</option>
+                        <option value="Cost Criteria">Cost Criteria (lower is better)</option>
+                    </select>
+                `;
+                
+                const weightCell = row.insertCell();
+                weightCell.innerHTML = `<input type="number" step="0.001" min="0" max="1" value="${(1/numCriteria).toFixed(3)}" onchange="updateWeights()">`;
+            }
+
+            container.appendChild(table);
+        }
+
+        function createDecisionMatrix(numAlternatives, numCriteria) {
+            const table = document.getElementById('decisionMatrix');
+            table.innerHTML = '';
+
+            const headerRow = table.insertRow();
+            headerRow.innerHTML = '<th>Alternative</th>';
+            for (let j = 0; j < numCriteria; j++) {
+                headerRow.innerHTML += `<th>Criteria ${j + 1}</th>`;
+            }
+
+            for (let i = 0; i < numAlternatives; i++) {
+                const row = table.insertRow();
+                row.innerHTML = `<td><input type="text" value="Alternative ${i + 1}" maxlength="50" onchange="validateAllInputs()"></td>`;
+                
+                for (let j = 0; j < numCriteria; j++) {
+                    const cell = row.insertCell();
+                    cell.innerHTML = `<input type="number" step="0.01" min="0.01" onchange="validateAllInputs()" placeholder="0.00">`;
+                }
+            }
+        }
+
+        function loadSampleData() {
+            try {
+                document.getElementById('numAlternatives').value = 3;
+                document.getElementById('numCriteria').value = 4;
+                updateMatrix();
+
+                // Load sample criteria
+                const criteriaTable = document.querySelector('#criteriaConfig table');
+                const criteriaRows = criteriaTable.querySelectorAll('tr');
+                
+                for (let i = 1; i < criteriaRows.length && i <= SAMPLE_DATA.criteria.length; i++) {
+                    const inputs = criteriaRows[i].querySelectorAll('input, select');
+                    if (inputs.length >= 3) {
+                        inputs[0].value = SAMPLE_DATA.criteria[i-1];
+                        inputs[1].value = SAMPLE_DATA.criteriaTypes[i-1];
+                        inputs[2].value = SAMPLE_DATA.weights[i-1];
+                    }
+                }
+
+                // Load sample matrix data
+                const matrixTable = document.getElementById('decisionMatrix');
+                const matrixRows = matrixTable.querySelectorAll('tr');
+                
+                for (let i = 1; i < matrixRows.length && i <= SAMPLE_DATA.alternatives.length; i++) {
+                    const inputs = matrixRows[i].querySelectorAll('input');
+                    if (inputs.length > 0) {
+                        inputs[0].value = SAMPLE_DATA.alternatives[i-1];
+                        
+                        for (let j = 1; j < inputs.length && j <= SAMPLE_DATA.matrix[i-1].length; j++) {
+                            inputs[j].value = SAMPLE_DATA.matrix[i-1][j-1];
+                        }
+                    }
+                }
+
+                updateWeights();
+                validateAllInputs();
+                
+            } catch (error) {
+                ErrorHandler.logError(error, 'Sample Data Loading');
+            }
+        }
+
+        function updateWeights() {
+            try {
+                const criteriaTable = document.querySelector('#criteriaConfig table');
+                if (!criteriaTable) return;
+                
+                const weightInputs = criteriaTable.querySelectorAll('input[type="number"]');
+                
+                let total = 0;
+                weightInputs.forEach(input => {
+                    const value = parseFloat(input.value) || 0;
+                    total += value;
+                    
+                    if (value >= 0 && value <= 1) {
+                        input.classList.remove('input-invalid');
+                        input.classList.add('input-valid');
+                    } else {
+                        input.classList.remove('input-valid');
+                        input.classList.add('input-invalid');
+                    }
+                });
+
+                const totalWeightSpan = document.getElementById('totalWeight');
+                if (totalWeightSpan) {
+                    totalWeightSpan.textContent = total.toFixed(3);
+                    
+                    if (Math.abs(total - 1) < 0.001) {
+                        totalWeightSpan.style.color = '#28a745';
+                    } else {
+                        totalWeightSpan.style.color = '#dc3545';
+                    }
+                }
+                
+                validateAllInputs();
+            } catch (error) {
+                ErrorHandler.logError(error, 'Weight Update');
+            }
+        }
+
+        function validateProjectData() {
+            try {
+                const projectName = document.getElementById('projectName').value.trim();
+                const analyst = document.getElementById('analyst').value.trim();
+                
+                if (!projectName || !analyst) {
+                    UIManager.showValidationMessage('Project name and analyst name are required', 'warning');
+                    return false;
+                }
+                
+                return true;
+            } catch (error) {
+                ErrorHandler.logError(error, 'Project Data Validation');
+                return false;
+            }
+        }
+
+        function validateAllInputs() {
+            try {
+                const projectValid = validateProjectData();
+                const dataValid = DataManager.validateAllData();
+                
+                return projectValid && dataValid;
+            } catch (error) {
+                // Error already handled in DataManager.validateAllData()
+                return false;
+            }
+        }
+
+        function executeMethod(methodName) {
+            try {
+                if (!validateAllInputs()) {
+                    UIManager.showValidationMessage('Please fix data validation errors before calculation', 'error');
+                    return;
+                }
+
+                AppState.currentMethod = methodName;
+                UIManager.showLoading(true);
+
+                setTimeout(() => {
+                    try {
+                        switch (methodName) {
+                            case 'SAW':
+                                calculateSAW();
+                                break;
+                            case 'WPM':
+                                calculateWPM();
+                                break;
+                            case 'TOPSIS':
+                                calculateTOPSIS();
+                                break;
+                            case 'AHP':
+                                showAHPMatrix();
+                                break;
+                            case 'HYBRID':
+                                calculateHybrid();
+                                break;
+                            default:
+                                throw new Error(`Unknown method: ${methodName}`);
+                        }
+                    } catch (error) {
+                        ErrorHandler.logError(error, `${methodName} Execution`);
+                        UIManager.showValidationMessage(`Failed to execute ${methodName}: ${error.message}`, 'error');
+                    } finally {
+                        UIManager.showLoading(false);
+                    }
+                }, 100);
+                
+            } catch (error) {
+                ErrorHandler.logError(error, 'Method Execution');
+                UIManager.showLoading(false);
+            }
+        }
+
+        function calculateSAW() {
+            try {
+                const data = DataManager.getMatrixData();
+                const results = CalculationEngine.performSAW(data);
+                displayResults('SAW', results, data);
+                AppState.allMethodsResults.SAW = results;
+            } catch (error) {
+                ErrorHandler.logError(error, 'SAW Calculation');
+                throw error;
+            }
+        }
+
+        function calculateWPM() {
+            try {
+                const data = DataManager.getMatrixData();
+                const results = CalculationEngine.performWPM(data);
+                displayResults('WPM', results, data);
+                AppState.allMethodsResults.WPM = results;
+            } catch (error) {
+                ErrorHandler.logError(error, 'WPM Calculation');
+                throw error;
+            }
+        }
+
+        function calculateTOPSIS() {
+            try {
+                const data = DataManager.getMatrixData();
+                const results = CalculationEngine.performTOPSIS(data);
+                displayResults('TOPSIS', results, data);
+                AppState.allMethodsResults.TOPSIS = results;
+            } catch (error) {
+                ErrorHandler.logError(error, 'TOPSIS Calculation');
+                throw error;
+            }
+        }
+
+        function showAHPMatrix() {
+            try {
+                const data = DataManager.getMatrixData();
+                createAHPMatrix(data);
+                UIManager.showContainer('ahpContainer');
+            } catch (error) {
+                ErrorHandler.logError(error, 'AHP Matrix Display');
+                throw error;
+            }
+        }
+
+        function createAHPMatrix(data) {
+            try {
+                const table = document.getElementById('ahpMatrix');
+                table.innerHTML = '';
+
+                const numCriteria = data.numCriteria;
+                
+                const headerRow = table.insertRow();
+                headerRow.innerHTML = '<th>Criteria</th>';
+                for (let j = 0; j < numCriteria; j++) {
+                    headerRow.innerHTML += `<th>${data.criteria[j].name}</th>`;
+                }
+
+                for (let i = 0; i < numCriteria; i++) {
+                    const row = table.insertRow();
+                    row.innerHTML = `<th>${data.criteria[i].name}</th>`;
+                    
+                    for (let j = 0; j < numCriteria; j++) {
+                        const cell = row.insertCell();
+                        
+                        if (i === j) {
+                            cell.innerHTML = '1.000';
+                            cell.style.backgroundColor = '#e9ecef';
+                        } else if (i < j) {
+                            cell.innerHTML = `<input type="number" step="0.1" min="0.1" max="9" value="1" onchange="updateAHPMatrix(${i}, ${j})">`;
+                        } else {
+                            cell.innerHTML = '<span id="ahp_' + i + '_' + j + '">1.000</span>';
+                            cell.style.backgroundColor = '#f8f9fa';
+                        }
+                    }
+                }
+                
+                AppState.ahpMatrix = data;
+            } catch (error) {
+                ErrorHandler.logError(error, 'AHP Matrix Creation');
+                throw error;
+            }
+        }
+
+        function updateAHPMatrix(i, j) {
+            try {
+                const input = document.querySelector(`#ahpMatrix tr:nth-child(${i+2}) td:nth-child(${j+2}) input`);
+                if (!input) return;
+                
+                const value = parseFloat(input.value);
+                if (!ErrorHandler.validateInput(value, 'number', 0.1, 9)) {
+                    input.value = 1;
+                    return;
+                }
+                
+                const reciprocal = (1 / value).toFixed(3);
+                const reciprocalElement = document.getElementById(`ahp_${j}_${i}`);
+                if (reciprocalElement) {
+                    reciprocalElement.textContent = reciprocal;
+                }
+            } catch (error) {
+                ErrorHandler.logError(error, 'AHP Matrix Update');
+            }
+        }
+
+        function calculateAHP() {
+            try {
+                const data = AppState.ahpMatrix || DataManager.getMatrixData();
+                const results = CalculationEngine.performAHP(data);
+                displayAHPResults(results);
+                
+                if (results.isConsistent) {
+                    updateCriteriaWeights(results.weights);
+                }
+                
+                AppState.allMethodsResults.AHP = results;
+            } catch (error) {
+                ErrorHandler.logError(error, 'AHP Calculation');
+                UIManager.showValidationMessage(`AHP calculation failed: ${error.message}`, 'error');
+            }
+        }
+
+        function displayAHPResults(results) {
+            try {
+                const resultsDiv = document.getElementById('ahpResults');
+                
+                let html = `
+                    <h3>AHP Calculation Results</h3>
+                    <div class="steps-container">
+                        <div class="step">
+                            <h4>Criteria Weights:</h4>
+                            <ul>
+                `;
+
+                const data = AppState.ahpMatrix || DataManager.getMatrixData();
+                for (let i = 0; i < results.weights.length; i++) {
+                    html += `<li>${data.criteria[i].name}: ${results.weights[i].toFixed(4)} (${(results.weights[i] * 100).toFixed(1)}%)</li>`;
+                }
+
+                html += `
+                            </ul>
+                        </div>
+                        <div class="step ahp-consistency ${results.isConsistent ? 'valid' : 'invalid'}">
+                            <h4>Consistency Analysis:</h4>
+                            <p>λmax = ${results.lambdaMax.toFixed(4)}</p>
+                            <p>CI = ${results.CI.toFixed(4)}</p>
+                            <p>CR = ${results.CR.toFixed(4)} ${results.isConsistent ? '✓ (≤ 0.1 - Acceptable)' : '✗ (> 0.1 - Requires adjustment)'}</p>
+                        </div>
+                    </div>
+                `;
+
+                if (results.isConsistent) {
+                    html += `
+                        <div style="margin-top: 16px;">
+                            <button class="method-btn topsis" onclick="executeMethod('TOPSIS')">Continue with TOPSIS</button>
+                            <button class="method-btn hybrid" onclick="executeMethod('HYBRID')">Execute AHP-TOPSIS Hybrid</button>
+                        </div>
+                    `;
+                } else {
+                    html += `
+                        <div style="margin-top: 16px; padding: 16px; background: #f8d7da; color: #721c24;">
+                            <strong>Action Required:</strong> Please adjust the pairwise comparison values to improve consistency (CR ≤ 0.1)
+                        </div>
+                    `;
+                }
+
+                resultsDiv.innerHTML = html;
+            } catch (error) {
+                ErrorHandler.logError(error, 'AHP Results Display');
+            }
+        }
+
+        function updateCriteriaWeights(weights) {
+            try {
+                const criteriaTable = document.querySelector('#criteriaConfig table');
+                if (!criteriaTable) return;
+                
+                const weightInputs = criteriaTable.querySelectorAll('input[type="number"]');
+                
+                for (let i = 0; i < weights.length && i < weightInputs.length; i++) {
+                    weightInputs[i].value = weights[i].toFixed(4);
+                }
+                
+                updateWeights();
+                UIManager.showValidationMessage('Criteria weights updated from AHP calculation', 'success');
+            } catch (error) {
+                ErrorHandler.logError(error, 'Criteria Weights Update');
+            }
+        }
+
+        function calculateHybrid() {
+            try {
+                const data = DataManager.getMatrixData();
+                
+                // First, ensure we have AHP results with good consistency
+                if (!AppState.allMethodsResults.AHP || !AppState.allMethodsResults.AHP.isConsistent) {
+                    UIManager.showValidationMessage('AHP calculation with acceptable consistency (CR ≤ 0.1) is required first', 'error');
+                    showAHPMatrix();
+                    return;
+                }
+                
+                // Use AHP weights for TOPSIS
+                const ahpResults = AppState.allMethodsResults.AHP;
+                updateCriteriaWeights(ahpResults.weights);
+                const updatedData = DataManager.getMatrixData();
+                const topsisResults = CalculationEngine.performTOPSIS(updatedData);
+                
+                const hybridResults = {
+                    method: 'AHP-TOPSIS Hybrid',
+                    ahp: ahpResults,
+                    topsis: topsisResults,
+                    scores: topsisResults.scores
+                };
+                
+                displayHybridResults(hybridResults, updatedData);
+                AppState.allMethodsResults.Hybrid = hybridResults;
+                
+            } catch (error) {
+                ErrorHandler.logError(error, 'Hybrid Calculation');
+                UIManager.showValidationMessage(`Hybrid calculation failed: ${error.message}`, 'error');
+            }
+        }
+
+        function displayHybridResults(results, data) {
+            try {
+                UIManager.showContainer('resultsContainer');
+                
+                document.getElementById('currentMethod').innerHTML = `
+                    <h3>AHP-TOPSIS Hybrid Analysis Results</h3>
+                    <p><strong>Method:</strong> Weights from AHP + Ranking from TOPSIS</p>
+                    <p><strong>Consistency:</strong> CR = ${results.ahp.CR.toFixed(4)} ${results.ahp.isConsistent ? '✓' : '✗'}</p>
+                `;
+
+                const stepsHtml = `
+                    <div class="step">
+                        <h4>Phase 1: AHP Weight Determination</h4>
+                        <p>Pairwise comparison matrix with consistency ratio: ${results.ahp.CR.toFixed(4)}</p>
+                    </div>
+                    <div class="step">
+                        <h4>Phase 2: TOPSIS Ranking with AHP Weights</h4>
+                        <p>Applied AHP-derived weights to TOPSIS calculation for final ranking</p>
+                    </div>
+                `;
+                
+                document.getElementById('calculationSteps').innerHTML = stepsHtml;
+                displayResultsTable(results.scores);
+                ChartManager.createResultsChart(results.scores, 'AHP-TOPSIS Hybrid');
+                
+            } catch (error) {
+                ErrorHandler.logError(error, 'Hybrid Results Display');
+            }
+        }
+
+        function displayResults(methodName, results, data) {
+            try {
+                UIManager.showContainer('resultsContainer');
+                
+                document.getElementById('currentMethod').innerHTML = `
+                    <h3>${methodName} Analysis Results</h3>
+                    <p><strong>Method:</strong> ${getMethodDescription(methodName)}</p>
+                `;
+
+                if (results.steps) {
+                    let stepsHtml = '';
+                    results.steps.forEach(step => {
+                        stepsHtml += `
+                            <div class="step">
+                                <h4>${step.title}</h4>
+                                <p>${step.description}</p>
+                            </div>
+                        `;
+                    });
+                    document.getElementById('calculationSteps').innerHTML = stepsHtml;
+                }
+
+                displayResultsTable(results.scores);
+                ChartManager.createResultsChart(results.scores, methodName);
+                
+                AppState.currentResults = results;
+                
+            } catch (error) {
+                ErrorHandler.logError(error, 'Results Display');
+            }
+        }
+
+        function getMethodDescription(methodName) {
+            const descriptions = {
+                'SAW': 'Simple Additive Weighting - Linear aggregation with normalized criteria',
+                'WPM': 'Weighted Product Method - Multiplicative aggregation approach',
+                'TOPSIS': 'Technique for Order Preference by Similarity to Ideal Solution'
+            };
+            return descriptions[methodName] || methodName;
+        }
+
+        function displayResultsTable(scores) {
+            try {
+                const table = document.getElementById('resultsTable');
+                table.innerHTML = `
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Alternative</th>
+                            <th>Score</th>
+                            <th>Performance</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                `;
+
+                const tbody = table.querySelector('tbody');
+                scores.forEach(item => {
+                    const row = tbody.insertRow();
+                    const performanceText = item.rank === 1 ? 'Optimal Choice' : 
+                                          item.rank === 2 ? 'Strong Alternative' : 
+                                          item.rank === 3 ? 'Moderate Choice' : 'Lower Priority';
+                    
+                    row.innerHTML = `
+                        <td class="rank-${item.rank}">${item.rank}</td>
+                        <td><strong>${item.alternative}</strong></td>
+                        <td>${item.score.toFixed(4)}</td>
+                        <td>${performanceText}</td>
+                    `;
+                });
+            } catch (error) {
+                ErrorHandler.logError(error, 'Results Table Display');
+            }
+        }
+
+        function compareAllMethods() {
+            try {
+                // Validate data first
+                if (!validateAllInputs()) {
+                    UIManager.showValidationMessage('Please fix validation errors before comparison', 'error');
+                    return;
+                }
+
+                UIManager.showLoading(true);
+
+                setTimeout(() => {
+                    try {
+                        // Calculate all methods if not done
+                        const methodsToCalculate = [
+                            { name: 'SAW', func: calculateSAW },
+                            { name: 'WPM', func: calculateWPM },
+                            { name: 'TOPSIS', func: calculateTOPSIS }
+                        ];
+
+                        methodsToCalculate.forEach(method => {
+                            if (!AppState.allMethodsResults[method.name]) {
+                                method.func();
+                            }
+                        });
+
+                        showComparison();
+                    } catch (error) {
+                        ErrorHandler.logError(error, 'Method Comparison');
+                        UIManager.showValidationMessage('Failed to perform method comparison', 'error');
+                    } finally {
+                        UIManager.showLoading(false);
+                    }
+                }, 100);
+
+            } catch (error) {
+                ErrorHandler.logError(error, 'Compare All Methods');
+                UIManager.showLoading(false);
+            }
+        }
+
+        function showComparison() {
+            try {
+                UIManager.showContainer('comparisonContainer');
+
+                const resultsDiv = document.getElementById('comparisonResults');
+                resultsDiv.innerHTML = '';
+
+                const bgColors = {
+                    'SAW': '#28a745',
+                    'WPM': '#ffc107',
+                    'TOPSIS': '#6f42c1',
+                    'AHP': '#dc3545',
+                    'Hybrid': '#17a2b8'
+                };
+
+                Object.keys(AppState.allMethodsResults).forEach(methodName => {
+                    const methodResult = AppState.allMethodsResults[methodName];
+                    const scores = methodResult.scores || methodResult.topsis?.scores;
+
+                    if (scores) {
+                        const methodDiv = document.createElement('div');
+                        methodDiv.className = 'method-result';
+                        
+                        methodDiv.innerHTML = `
+                            <h3 style="background: ${bgColors[methodName] || '#6c757d'}">${methodName}</h3>
+                            <ol>
+                                ${scores.map(item => `<li>${item.alternative} (${item.score.toFixed(3)})</li>`).join('')}
+                            </ol>
+                        `;
+                        
+                        resultsDiv.appendChild(methodDiv);
+                    }
+                });
+
+                ChartManager.createComparisonChart();
+                
+            } catch (error) {
+                ErrorHandler.logError(error, 'Comparison Display');
+            }
+        }
+
+        function exportToExcel() {
+            try {
+                let csvContent = "data:text/csv;charset=utf-8,";
+                
+                csvContent += "MCDM Analysis Results\n";
+                csvContent += `Project: ${document.getElementById('projectName').value}\n`;
+                csvContent += `Analyst: ${document.getElementById('analyst').value}\n`;
+                csvContent += `Date: ${new Date().toLocaleDateString()}\n\n`;
+
+                Object.keys(AppState.allMethodsResults).forEach(methodName => {
+                    const methodResult = AppState.allMethodsResults[methodName];
+                    const scores = methodResult.scores || methodResult.topsis?.scores;
+
+                    if (scores) {
+                        csvContent += `${methodName} Results\n`;
+                        csvContent += "Rank,Alternative,Score\n";
+                        scores.forEach(item => {
+                            csvContent += `${item.rank},${item.alternative},${item.score.toFixed(4)}\n`;
+                        });
+                        csvContent += "\n";
+                    }
+                });
+
+                const encodedUri = encodeURI(csvContent);
+                const link = document.createElement("a");
+                link.setAttribute("href", encodedUri);
+                link.setAttribute("download", `mcdm_analysis_${new Date().toISOString().split('T')[0]}.csv`);
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                
+                UIManager.showValidationMessage('Results exported successfully', 'success');
+                
+            } catch (error) {
+                ErrorHandler.logError(error, 'CSV Export');
+                UIManager.showValidationMessage('Export failed', 'error');
+            }
+        }
+
+        function exportToPDF() {
+            try {
+                window.print();
+            } catch (error) {
+                ErrorHandler.logError(error, 'PDF Export');
+                UIManager.showValidationMessage('Print function failed', 'error');
+            }
+        }
+
+        function resetApplication() {
+            try {
+                if (confirm('Are you sure you want to reset all data? This action cannot be undone.')) {
+                    AppState.allMethodsResults = {};
+                    AppState.currentResults = {};
+                    AppState.ahpMatrix = null;
+                    
+                    if (AppState.currentChart) {
+                        AppState.currentChart.destroy();
+                        AppState.currentChart = null;
+                    }
+                    
+                    if (AppState.comparisonChart) {
+                        AppState.comparisonChart.destroy();
+                        AppState.comparisonChart = null;
+                    }
+                    
+                    UIManager.hideAllContainers();
+                    loadSampleData();
+                    
+                    document.getElementById('errorContainer').classList.add('hidden');
+                    UIManager.showValidationMessage('Application reset successfully', 'success');
+                }
+            } catch (error) {
+                ErrorHandler.logError(error, 'Application Reset');
+            }
+        }
+
+        // UAT Test Suite
+        function runUATTests() {
+            console.log('Running UAT Tests...');
+            
+            // Test 1: Data Validation
+            try {
+                DataManager.validateAllData();
+                console.log('✓ Data validation test passed');
+            } catch (error) {
+                console.log('✗ Data validation test failed:', error.message);
+            }
+            
+            // Test 2: SAW Calculation
+            try {
+                const data = DataManager.getMatrixData();
+                CalculationEngine.performSAW(data);
+                console.log('✓ SAW calculation test passed');
+            } catch (error) {
+                console.log('✗ SAW calculation test failed:', error.message);
+            }
+            
+            // Test 3: TOPSIS Calculation
+            try {
+                const data = DataManager.getMatrixData();
+                CalculationEngine.performTOPSIS(data);
+                console.log('✓ TOPSIS calculation test passed');
+            } catch (error) {
+                console.log('✗ TOPSIS calculation test failed:', error.message);
+            }
+            
+            // Test 4: UI State Management
+            try {
+                UIManager.hideAllContainers();
+                UIManager.showContainer('resultsContainer');
+                UIManager.hideAllContainers();
+                console.log('✓ UI state management test passed');
+            } catch (error) {
+                console.log('✗ UI state management test failed:', error.message);
+            }
+            
+            console.log('UAT Tests completed');
+        }
+
+        // Enable debug mode for UAT
+        if (window.location.search.includes('debug=true')) {
+            AppState.debugMode = true;
+            console.log('Debug mode enabled');
+            
+            // Run UAT tests after initialization
+            setTimeout(runUATTests, 2000);
+        }
+    </script>
+</body>
+</html>
